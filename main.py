@@ -76,7 +76,9 @@ def main():
     # open session
     models = [GAN, CGAN, infoGAN, ACGAN, EBGAN, WGAN, WGAN_GP, DRAGAN,
               LSGAN, BEGAN, VAE, CVAE]
-    with tf.Session(config=tf.ConfigProto(allow_soft_placement=True)) as sess:
+    tf_config = tf.ConfigProto(allow_soft_placement=True)
+    tf_config.gpu_options.allow_growth = True
+    with tf.Session(config=tf_config) as sess:
         # declare instance for GAN
 
         gan = None
