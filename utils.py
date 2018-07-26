@@ -11,6 +11,7 @@ from time import gmtime, strftime
 from six.moves import xrange
 import matplotlib.pyplot as plt
 import os, gzip
+import imageio
 
 import tensorflow as tf
 import tensorflow.contrib.slim as slim
@@ -69,7 +70,7 @@ def get_image(image_path, input_height, input_width, resize_height=64, resize_wi
     return transform(image, input_height, input_width, resize_height, resize_width, crop)
 
 def save_images(images, size, image_path):
-    return imsave(inverse_transform(images), size, image_path)
+    imsave(images, size, image_path)
 
 def imread(path, grayscale = False):
     if (grayscale):
@@ -102,7 +103,11 @@ def merge(images, size):
 
 def imsave(images, size, path):
     image = np.squeeze(merge(images, size))
-    return scipy.misc.imsave(path, image)
+
+    image = np.clip(image, 0.0, 1.0)
+    image = np.multiply(image, 255.0)
+    image = image.astype(np.uint8)
+    imageio.imwrite(path, image)
 
 def center_crop(x, crop_h, crop_w, resize_h=64, resize_w=64):
     if crop_w is None:
